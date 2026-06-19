@@ -1,0 +1,43 @@
+{
+  "name": "node-sequelize-library-api",
+  "version": "1.0.0",
+  "description": "A simple Node.js CRUD API for managing data with basic Create, Read, Update, and Delete operations using a clean and scalable structure.",
+  "keywords": [
+    "nodejs",
+    "express",
+    "sequelize",
+    "javascript",
+    "rest-api",
+    "crud",
+    "backend",
+    "library-management",
+    "mvc",
+    "postgres"  
+  ],
+  "homepage": "https://github.com/dvonatan/node-sequelize-library-api#readme",
+  "bugs": {
+    "url": "https://github.com/dvonatan/node-sequelize-library-api/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dvonatan/node-sequelize-library-api.git"
+  },
+  "license": "ISC",
+  "author": "\"author\": \"Dyonatan C (github.com/dvonatan)",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "mysql2": "^3.22.5",
+    "pg": "^8.21.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.8"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14",
+    "sequelize-cli": "^6.6.5"
+  }
+}
