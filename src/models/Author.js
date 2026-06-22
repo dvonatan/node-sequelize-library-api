@@ -13,7 +13,13 @@ class Author extends Model {
           allowNull: false,
         },
       },
-      { sequelize: connection, modelName: "author", tableName: "authors" },
+      {
+        sequelize,
+        modelName: "Author",
+        tableName: "authors",
+        timestamps: true,
+        underscored: true,
+      },
     );
   }
   static associate(models) {

@@ -22,9 +22,11 @@ class LibraryBook {
         },
       },
       {
-        sequelize: connection,
+        sequelize,
         modelName: "LibraryBook",
         tableName: "library_books",
+        timestamps: true,
+        underscored: true,
       },
     );
   }

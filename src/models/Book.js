@@ -4,10 +4,6 @@ class Book extends Model {
   static init(sequelize) {
     super.init(
       {
-        id: {
-          type: DataTypes.INTEGER,
-          allowNull: false,
-        },
         title: {
           type: DataTypes.STRING,
           allowNull: false,
@@ -25,18 +21,24 @@ class Book extends Model {
           allowNull: false,
         },
       },
-      { sequelize: connection, modelName: "Book", tableName: "books" },
+      {
+        sequelize,
+        modelName: "Book",
+        tableName: "books",
+        timestamps: true,
+        underscored: true,
+      },
     );
   }
-  static associate(model) {
+  static associate(models) {
     this.belongsTo(models.Author, {
       foreignKey: "author_id",
       as: "authors",
     });
-    this.belongsToMany(models.LibraryBook, {
+    this.belongsToMany(models.Library, {
       foreignKey: "book_id",
       through: "LibraryBook",
-      as: "librarybooks",
+      as: "libraries",
     });
   }
 }
