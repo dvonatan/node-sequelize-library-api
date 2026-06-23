@@ -1,4 +1,3 @@
-import { id } from "date-fns/locale";
 import Author from "../models/Author.js";
 import Book from "../models/Book.js";
 import Library from "../models/Library.js";
@@ -7,8 +6,8 @@ import { Op } from "sequelize";
 
 class AuthorController {
   async index(req, res) {
-    const author = await Author.findAll();
-    return res.status(200).json(author);
+    const authors = await Author.findAll();
+    return res.status(200).json(authors);
   }
 
   async show(req, res) {
@@ -46,6 +45,9 @@ class AuthorController {
       limit,
       offset: limit * page - limit,
     });
+    if (!data.length) {
+      return res.status(404).json({ error: "Book not found" });
+    }
     return res.status(200).json(data);
   }
   async store(req, res) {
@@ -61,7 +63,7 @@ class AuthorController {
     const { id } = req.params;
     const author = await Author.findByPk(id);
     if (!author) {
-      return res.satus(204).json({ error: "not content" });
+      return res.satus(400).json({ error: "Not content" });
     }
     await author.update(req.body);
     return res.status(200).json(author);
@@ -71,10 +73,11 @@ class AuthorController {
     const { id } = req.params;
     const author = await Author.findByPk(id);
     if (!author) {
-      return res.status(204).json({ error: "not content" });
+      return res.status(400).json({ error: "Not content" });
     }
+    await author.destroy();
     return res.status(204).json({ Message: "Deleted successfully" });
   }
 }
 
-export default AuthorController;
+export default new AuthorController();

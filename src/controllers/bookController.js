@@ -41,10 +41,42 @@ class BookController {
       include: [
         { model: "Author", as: "authors", attributes: { name, nationality } },
       ],
-      order: [["id", "ASC"]],
+      order: [["title", "ASC"]],
       limit,
       offset: limit * page - limit,
     });
+    if (!data.length) {
+      return res.status(404).json({ error: "Book not found" });
+    }
     return res.status(200).json(data);
   }
+  async store(req, res) {
+    const { title, genre, publication_year } = req.body;
+    try {
+      const newBook = await Book.create({ title, genre, publication_year });
+      return res.status(201).json(newBook);
+    } catch {
+      return res.status(400).json({ error: "Bad Request" });
+    }
+  }
+  async update(req, res) {
+    const { id } = req.params;
+    const book = await Book.findByPk(id);
+    if (!book) {
+      return res.status(400).json({ error: "Not content" });
+    }
+
+    await book.update(req.body);
+    return res.status(200).json(book);
+  }
+  async destroy(req, res) {
+    const { id } = req.params;
+    const book = await Book.findByPk(id);
+    if (!book) {
+      return res.status(400).json({ error: "Not content" });
+    }
+    return res.status(204).json({ Message: "Deleted successfully" });
+  }
 }
+
+export default new BookController();
