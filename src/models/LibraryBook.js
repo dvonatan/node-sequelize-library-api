@@ -30,4 +30,14 @@ class LibraryBook {
       },
     );
   }
+  static associate(models) {
+    this.belongsTo(models.Library, {
+      foreingKey: "library_id",
+      as: "libraries",
+    });
+    this.belongsTo(models.Book, {
+      foreingKey: "book_id",
+      as: "books",
+    });
+  }
 }

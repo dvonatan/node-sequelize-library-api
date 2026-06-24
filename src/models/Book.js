@@ -37,7 +37,7 @@ class Book extends Model {
     });
     this.belongsToMany(models.Library, {
       foreignKey: "book_id",
-      through: "LibraryBook",
+      through: models.LibraryBook,
       as: "libraries",
     });
   }

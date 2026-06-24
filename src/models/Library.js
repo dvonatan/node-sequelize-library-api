@@ -20,7 +20,7 @@ class Library extends Model {
   }
   static associate(models) {
     this.belongsToMany(models.Book, {
-      through: "LibraryBook",
+      through: models.LibraryBook,
       foreignKey: "library_id",
       as: "books",
     });
