@@ -27,7 +27,7 @@ class LibraryController {
       where,
       include: [
         {
-          model: "Book",
+          model: Book,
           as: "books",
           attributes: { title, genre, publication_year },
         },

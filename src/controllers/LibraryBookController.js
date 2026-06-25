@@ -6,6 +6,30 @@ import { Op } from "sequelize";
 
 class LibraryBookController {
   async index(req, res) {
-    const totalCopies = await Book.count(id);
+    const librariesCopies = await Library.findAll({
+      include: [
+        {
+          model: Book,
+          as: "books",
+          through: {
+            attributes: [
+              "library_id",
+              "book_id",
+              "total_copies",
+              "available_copies",
+            ],
+          },
+        },
+      ],
+      order: [["local", "ASC"]],
+      limit,
+      offset: limit * page - limit,
+    });
+    return res.status(200).json(librariesCopies);
+  }
+  async show(req, res) {
+    const { id } = req.params;
+
+    const librariesCopies = await Library.findAll({});
   }
 }
