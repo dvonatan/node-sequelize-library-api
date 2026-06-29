@@ -30,6 +30,24 @@ class LibraryBookController {
   async show(req, res) {
     const { id } = req.params;
 
-    const librariesCopies = await Library.findAll({});
+    let where = {};
+
+    const data = await Book.findOne({
+      where: { id },
+      include: [
+        {
+          model: LibraryBook,
+          as: "libraryBooks",
+          include: [
+            {
+              model: Library,
+              as: "library",
+              attributes: ["local"],
+            },
+          ],
+        },
+      ],
+      required: true,
+    });
   }
 }

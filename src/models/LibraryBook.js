@@ -32,12 +32,12 @@ class LibraryBook {
   }
   static associate(models) {
     this.belongsTo(models.Library, {
-      foreingKey: "library_id",
-      as: "libraries",
+      foreignKey: "library_id",
+      as: "library",
     });
     this.belongsTo(models.Book, {
-      foreingKey: "book_id",
-      as: "books",
+      foreignKey: "book_id",
+      as: "book",
     });
   }
 }

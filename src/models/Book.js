@@ -33,12 +33,16 @@ class Book extends Model {
   static associate(models) {
     this.belongsTo(models.Author, {
       foreignKey: "author_id",
-      as: "authors",
+      as: "author",
     });
     this.belongsToMany(models.Library, {
       foreignKey: "book_id",
       through: models.LibraryBook,
       as: "libraries",
+    });
+    this.hasMany(models.LibraryBook, {
+      foreignKey: "book_id",
+      as: "libraryBooks",
     });
   }
 }

@@ -40,7 +40,7 @@ class BookController {
     const data = await Book.findAll({
       where,
       include: [
-        { model: Author, as: "authors", attributes: { name, nationality } },
+        { model: Author, as: "author", attributes: { name, nationality } },
       ],
       order: [["title", "ASC"]],
       limit,
