@@ -41,6 +41,15 @@ class LibraryController {
     }
     return res.status(200).json(data);
   }
+  async store(req, res) {
+    try {
+      const { local } = req.body;
+      const newLibrary = await Library.create({ local });
+      return res.status(201).json(newLibrary);
+    } catch {
+      return res.status(400).json({ error: "Bad Request" });
+    }
+  }
   async update(req, res) {
     const { id } = req.params;
     const library = await Library.findByPk(id);
