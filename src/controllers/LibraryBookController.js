@@ -53,12 +53,14 @@ class LibraryBookController {
   }
   async store(req, res) {
     const { library_id, book_id, total_copies, available_copies } = req.body;
-    if (available_copies > total_copies) {
-      return res.status(400).json({
-        error:
-          "Available copies cannot be greater than the total number of copies.",
-      });
+
+    const data = [Library.findByPk(library_id), Book.findByPk(book_id)];
+    const [libraryExist, bookExist] = await Promise.all(data);
+
+    if (!libraryExist || !bookExist) {
+      return res.status(404).json({ error: "Entry not found." });
     }
+
     if (total_copies < 0 || available_copies < 0) {
       return res.status(400).json({
         error: "Negative copies are not allowed",
@@ -75,11 +77,18 @@ class LibraryBookController {
         instance.total_copies += total_copies;
         instance.available_copies += available_copies;
         await instance.save();
+        return res.status(201).json({ message: "Updated." });
       }
     } catch (error) {
       return res
         .status(500)
         .json({ mensagem: "Internal server error while saving the record." });
+    }
+    if (available_copies > total_copies) {
+      return res.status(400).json({
+        error:
+          "Available copies cannot be greater than the total number of copies.",
+      });
     }
   }
 }
