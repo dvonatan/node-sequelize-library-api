@@ -23,15 +23,11 @@ class LibraryBookController {
         },
       ],
       order: [["local", "ASC"]],
-      limit,
-      offset: limit * page - limit,
     });
     return res.status(200).json(librariesCopies);
   }
   async show(req, res) {
     const { id } = req.params;
-
-    let where = {};
 
     const data = await Book.findOne({
       where: { id },
@@ -50,45 +46,80 @@ class LibraryBookController {
         },
       ],
     });
+    if (!data) {
+      return res.status(404).json({ error: "Not found" });
+    }
+    return res.status(200).json(data);
   }
   async store(req, res) {
     const { library_id, book_id, total_copies, available_copies } = req.body;
-
-    const data = [Library.findByPk(library_id), Book.findByPk(book_id)];
-    const [libraryExist, bookExist] = await Promise.all(data);
-
-    if (!libraryExist || !bookExist) {
-      return res.status(404).json({ error: "Entry not found." });
+    if (!library_id || !book_id) {
+      return res.status(400).json({ error: "Missing IDs." });
     }
 
-    if (total_copies < 0 || available_copies < 0) {
+    if (total_copies <= 0 || available_copies <= 0) {
       return res.status(400).json({
-        error: "Negative copies are not allowed",
+        error: "Copies must be greater than zero.",
       });
     }
 
+    const bookOperation = [
+      Library.findByPk(library_id),
+      Book.findByPk(book_id),
+    ];
+
+    const [libraryExist, bookExist] = await Promise.all(bookOperation);
+    if (!libraryExist || !bookExist) {
+      return res.status(404).json({ error: "Entry not found." });
+    }
     try {
       const [instance, justCreated] = await LibraryBook.findOrCreate({
         where: { library_id, book_id },
         defaults: { total_copies, available_copies },
       });
 
+      if (instance.available_copies > instance.total_copies) {
+        return res.status(400).json({
+          error:
+            "Available copies cannot be greater than the total number of copies.",
+        });
+      }
+
       if (!justCreated) {
         instance.total_copies += total_copies;
         instance.available_copies += available_copies;
-        await instance.save();
-        return res.status(201).json({ message: "Updated." });
       }
+
+      if (!justCreated) {
+        await instance.save();
+        return res.status(200).json({ message: "Updated.", data: instance });
+      }
+
+      return res.status(201).json({
+        message: "Association created successfully.",
+        data: instance,
+      });
     } catch (error) {
       return res
         .status(500)
         .json({ mensagem: "Internal server error while saving the record." });
     }
-    if (available_copies > total_copies) {
-      return res.status(400).json({
-        error:
-          "Available copies cannot be greater than the total number of copies.",
-      });
+  }
+  async destroy(req, res) {
+    const { library_id, book_id } = req.params;
+
+    if (!library_id || !book_id) {
+      return res.status(404).json({ error: "Resource not found." });
     }
+
+    const association = await LibraryBook.findOne({
+      where: { library_id, book_id },
+    });
+    if (!association) {
+      return res.status(404).json({ error: "Resource not found." });
+    }
+
+    await association.destroy();
+    return res.status(200).json({ message: "Data deleted successfully" });
   }
 }
